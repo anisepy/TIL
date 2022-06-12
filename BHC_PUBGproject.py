@@ -49,6 +49,7 @@ def reduce_mem_usage(df):
     print('Decreased by {:.1f}%'.format(100 * (start_mem - end_mem) / start_mem))
 
     return df
+reduce_mem_usage(df)
 
 # 결측치 제거
 df = df.dropna()
@@ -68,13 +69,13 @@ df.loc[df.matchType.str.contains('duo'),'duo'] = 1
 df.loc[~df.matchType.str.contains('duo'),'duo'] = 0
 df.loc[df.matchType.str.contains('squad'),'squad'] = 1
 df.loc[~df.matchType.str.contains('squad'),'squad'] = 0
-df.loc[df.matchType.str.contains('normal')&
-       df.matchType.str.contains('clash')&
-       df.matchType.str.contains('flare'),'event'] = 1
-df.loc[~df.matchType.str.contains('normal')&
-       ~df.matchType.str.contains('clash')&
-       ~df.matchType.str.contains('flare'),'event'] = 0
-df.head()
+df.loc[(df.matchType.str.contains('normal'))|
+       (df.matchType.str.contains('crash'))|
+       (df.matchType.str.contains('flare')),'event'] = 1
+df.loc[(~df.matchType.str.contains('normal'))&
+       (~df.matchType.str.contains('crash'))&
+       (~df.matchType.str.contains('flare')),'event'] = 0
+df.isna().sum()
 
 ## 참가 인원에 비해 팀 수가 너무 적은 경우 조정
 # 팀 수 의 이상치 열 생성
@@ -135,3 +136,56 @@ df.loc[df.event ==0.0,'Gap'].value_counts().to_frame().sort_index()
 
 # 만든열 드랍
 df=df.drop(['num','numDuo','numSquad','max','Gap','GrpError'],axis=1)
+
+# kills, headshotKills, killStreaks, longestKill 이상치 제거 (각 column 별 약 1000개 정도 없어지도록 값을 잡음)
+
+df=df.drop(index=df[ (df['kills']>15) | (df['headshotKills']>7) | (df['killStreaks']>5) | (df['longestKill']>500)  ].index)
+
+# rideDistance = 0 인데 roadKill 이 존재하는 것 -> 이상치
+df=df.drop(index=df[ (df['rideDistance']==0) & (df['roadKills']>0)].index)
+​
+# damageDealt = 0 인데 kills가 존재하는 것 -> 이상치
+df=df.drop(index=df[ (df['damageDealt']==0) & (df['kills']>0)].index)
+
+# maxGrp_killPlace : 그룹 별로 능력치는 다르지만 같은 그룹이면 같은 등수를 나타내는 것이기 때문에 가장 잘하는 사람 기준으로 해서 보기 위한 column
+df['maxGrp_killPlace'] = df.groupby('groupId')['killPlace'].transform('max')
+df['maxGrp_kills'] = df.groupby('groupId')['kills'].transform('max')
+df['maxGrp_totalDistance'] = df.groupby('groupId')['totalDistance'].transform('max')
+
+# sniper : 얻은 무기 수 대비 kill 거리의 비율
+df['sniper'] = df['longestKill']/100*df['weaponsAcquired']
+
+# kill 기준
+# 킬 대비 헤드샷 비율
+df['headshotRate'] = df['headshotKills'] / df['kills']
+# 킬이 0인 경우 결측치 발생 -> 0 넣어줌
+df['headshotRate'] = df['headshotRate'].fillna(0) 
+# 킬 대비 연속킬 비율
+df['killStreakRate'] = df['killStreaks'] / df['kills']
+
+df['killsPerDistance'] = df['totalDistance'] / df['kills']
+
+# 킬수/매치인원 비율 피쳐
+df['kill_per']= df['kills']  / df['num']
+
+# 이들의 상관관계 확인
+derived_corr = df[['maxGrp_killPlace','maxGrp_kills','maxGrp_totalDistance', 'sniper', 'headshotRate', 'killStreakRate', 'killsPerDistance','winPlacePerc']].corr()
+derived_corr
+# maxGrp_killPlace가 0.8이상으로 높게 나옴
+
+# 파생 변수 생성
+df['healthitems'] = df['heals'] + df['boosts']
+df['totalDistance'] = df['rideDistance'] + df["walkDistance"] + df["swimDistance"]
+df["skill"] = df["headshotKills"] + df["roadKills"]
+
+# 상위 10% 고수 열 생성
+# df.loc[df['winPlacePerc'] > df['winPlacePerc'].quantile(0.9),'winPlacePerc'].min()
+# >>> 0.9143
+df.loc[df.winPlacePerc>0.9143,'superior'] = 1
+df.loc[df.winPlacePerc<=0.9143,'superior'] = 0
+
+# 하위 10% 초보 열 생성
+# df.loc[df['winPlacePerc'] < df['winPlacePerc'].quantile(0.1),'winPlacePerc'].max()
+# >>> 0.0635
+df.loc[df.winPlacePerc<0.0635,'beginner'] = 1
+df.loc[df.winPlacePerc>=0.0635,'beginner'] = 0
