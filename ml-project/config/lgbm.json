@@ -1,0 +1,17 @@
+{
+    "preprocess": {
+      "scaling": true,
+      "text":false,
+      "importance":true,
+      "coefficient":false
+      },
+    "params":  {
+      "objective":"regression",
+      "boosting":"gbdt",
+      "random_state":0,
+      "learning_rate":0.1,
+      "n_estimators":100,
+      "max_depth":3,
+      "deterministic":false
+    }
+  }

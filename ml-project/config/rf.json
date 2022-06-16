@@ -1,0 +1,13 @@
+{
+  "preprocess": {
+    "scaling": true,
+    "text": false,
+    "importance" : true,
+    "coefficient" : false
+  },
+  "params":  {
+    "n_estimators": 5,
+    "max_depth": 3,
+    "min_samples_split": 2
+  }
+}
