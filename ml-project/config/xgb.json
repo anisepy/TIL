@@ -1,0 +1,18 @@
+{
+    "preprocess": {
+      "scaling": true,
+      "text": true,
+      "importance":false,
+      "coefficient":false
+      },
+    "params":  {
+      "lambda": 0.07570789545936114,
+      "alpha": 0.24718532574428792,
+      "colsample_bytree": 0.5,
+      "subsample": 1.0,
+      "learning_rate": 0.014,
+      "max_depth": 17,
+      "random_state": 2020,
+      "min_child_weight": 28
+    }
+  }

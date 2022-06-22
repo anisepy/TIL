@@ -1,0 +1,11 @@
+{
+    "preprocess": {
+      "scaling": true,
+      "text": true,
+      "importance": true,
+      "coefficient":false
+      },
+    "params":  {
+      "task_type":"GPU"
+    }
+  }
