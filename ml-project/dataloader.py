@@ -3,20 +3,17 @@ import pandas as pd
 
 
 def load_train():
-    data = pd.read_csv('ml-project/data/train_V2.csv')
+    data = pd.read_csv('./data/train_V2.csv')
     target = 'winPlacePerc'  
     df = data.copy()
-    exclude_cols = ['Id','matchId','matchType', 'groupId','rankPoints','winPoints','killPoints']
-    df = df.drop(exclude_cols, axis=1)
-    df = df.dropna()
+    # df = df.dropna()
+    # df = df.drop(['matchType','Id','matchId','groupId','killPlace'],axis=1)
 
     return df, target
 
 def load_test():
-    data = pd.read_csv('ml-project/data/test_V2.csv')
-    test = data.copy()
-    test = test.dropna()
-    # exclude_cols = ['Id','matchId','groupId','rankPoints','winPoints','killPoints']
-    # test = test.drop(exclude_cols, axis=1)
+    test = pd.read_csv('./data/test_V2.csv')
 
-    return test
+    submission = pd.read_csv("./data/sample_submission_V2.csv")
+
+    return test, submission
