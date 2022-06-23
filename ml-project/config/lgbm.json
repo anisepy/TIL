@@ -16,5 +16,9 @@
       "n_estimators": 2796, 
       "min_child_samples": 100, 
       "subsample": 0.5698238216267754
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     }
   }
