@@ -17,6 +17,10 @@ def load_test():
     submission = pd.read_csv("./data/sample_submission_V2.csv")
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes

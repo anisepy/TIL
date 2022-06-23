@@ -1,5 +1,8 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 <<<<<<< HEAD
 from dataloader import load_train
 from dataloader import load_test
@@ -82,6 +85,9 @@ def main():
 
 
 if __name__ == "__main__":
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 from dataloader import load_train
@@ -177,6 +183,10 @@ def main():
 
 if __name__ == "__main__":
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+>>>>>>> main
+>>>>>>> Stashed changes
 =======
 >>>>>>> main
 >>>>>>> Stashed changes
